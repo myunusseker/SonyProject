@@ -3,7 +3,7 @@
 		<visual>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="_prototype.obj" scale="1 1 1" />
+				<mesh filename="_prototype.obj" scale="2 2 2" />
 			</geometry>
 			<material name="texture">
 				<color rgba="1.0 1.0 1.0 1.0"/>
@@ -12,7 +12,7 @@
 		<collision>
 			<origin xyz="0 0 0" rpy="0 0 0"/>
 			<geometry>
-				<mesh filename="_prototype.obj" scale="1 1 1" />
+				<mesh filename="_prototype.obj" scale="2 2 2" />
 			</geometry>
 		</collision>
 		<inertial>

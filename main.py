@@ -31,7 +31,7 @@ def filter_white(pcd, tolerance=1.55):
     return pcd
 
 
-def filter_table(pcd, table=(-0.3, -0.5, 0.8, 0.35, 0.0, 0.885)):
+def filter_table(pcd, table=(-0.3, -0.5, 0.7, 0.35, 0.0, 0.91)):
     min_x, min_y, min_z, max_x, max_y, max_z = table
     p = np.asarray(pcd.points)
     c = np.asarray(pcd.colors)
@@ -73,7 +73,7 @@ def segment_objects(pcd):
     points = np.asarray(pcd.points)
 
     # Use DBSCAN to cluster the points
-    db = DBSCAN(eps=0.01, min_samples=50).fit(points)
+    db = DBSCAN(eps=0.02, min_samples=100).fit(points)
     labels = db.labels_
 
     # Define an array of colors to use for the clusters
@@ -83,6 +83,8 @@ def segment_objects(pcd):
     clusters = []
     hulls = []
     for i in range(max(labels) + 1):
+        if np.sum(labels == i) < 1000:
+            continue
         cluster = o3d.geometry.PointCloud()
         cluster.points = o3d.utility.Vector3dVector(points[labels == i])
         cluster.paint_uniform_color(colors[i % len(colors)])
@@ -151,11 +153,12 @@ def generate_meshes(objects):
     for obj in objects:
         mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(
             obj,
-            depth=10,
+            depth=8,
             width=0,
             scale=2,
             linear_fit=False
         )[0]
+
         mesh.compute_vertex_normals()
         mesh.remove_degenerate_triangles()
         mesh.remove_duplicated_triangles()
@@ -171,7 +174,7 @@ def simplify_meshes(meshes):
     simple_meshes = []
     centers = []
     for i, mesh in enumerate(meshes):
-        simple_mesh = mesh.simplify_quadric_decimation(target_number_of_triangles=400)
+        simple_mesh = mesh.simplify_quadric_decimation(target_number_of_triangles=500)
         center = simple_mesh.get_center()
         """
         v_size = max(mesh.get_max_bound() - mesh.get_min_bound()) / 9
@@ -208,11 +211,11 @@ def create_sim(N, centers, colors):
     tableID = p.loadURDF("objects/table.obj.urdf", basePosition=[0, 0, 1.33],
                baseOrientation=p.getQuaternionFromEuler([np.pi / 2, 0, 0]))
     p.changeVisualShape(tableID, -1, rgbaColor=[0.98, 0.83, 0.6, 1])
-    plateID = p.loadURDF("objects/plate.obj.urdf", basePosition=[0, -0.1, 1.68],
-               baseOrientation=p.getQuaternionFromEuler([np.pi / 2, 0, 0]))
-    p.changeVisualShape(plateID, -1, rgbaColor=[1, 0.975, 0.95, 1])
+    #plateID = p.loadURDF("objects/plate.obj.urdf", basePosition=[0, -0.1, 1.68],
+    #           baseOrientation=p.getQuaternionFromEuler([np.pi / 2, 0, 0]))
+    #p.changeVisualShape(plateID, -1, rgbaColor=[1, 0.975, 0.95, 1])
     for i in range(N):
-        boxId = p.loadURDF(f"objects/object_{i}.obj.urdf", [centers[i][0], centers[i][1], centers[i][2] + 0.8])
+        boxId = p.loadURDF(f"objects/object_{i}.obj.urdf", [centers[i][0], centers[i][1], centers[i][2] + 1])
         p.changeVisualShape(boxId, -1, rgbaColor=[colors[i][0], colors[i][1], colors[i][2], 1])
 
     for i in range(10000):
@@ -223,9 +226,13 @@ def create_sim(N, centers, colors):
 
 
 if __name__ == '__main__':
-    pcd, original_pcd = load_pointcloud("1667251750484235.pcd")
+    pcd, original_pcd = load_pointcloud("scene1.pcd")
+
+    o3d.visualization.draw_geometries([pcd])
 
     clusters, hulls = segment_objects(pcd)
+
+    o3d.visualization.draw_geometries(clusters)
 
     objects = filter_objects(original_pcd, hulls)
 
