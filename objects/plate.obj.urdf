@@ -1,0 +1,23 @@
+<robot name="objects/plate.obj">
+	<link name="_name">
+		<visual>
+			<origin xyz="-1.4558161994088228e-05 0.05330916559587137 -1.6878267322663922e-06" rpy="0.0 0.0 0.0" />
+			<geometry>
+				<mesh filename="objects/plate.obj" scale="0.004 0.004 0.004" />
+			</geometry>
+			<material name="texture">
+				<color rgba="1.0 1.0 1.0 1.0" />
+			</material>
+		</visual>
+		<collision>
+			<origin xyz="-1.4558161994088228e-05 0.05330916559587137 -1.6878267322663922e-06" rpy="0.0 0.0 0.0" />
+			<geometry>
+				<mesh filename="objects/plate_vhacd.obj" scale="0.004 0.004 0.004" />
+			</geometry>
+		</collision>
+		<inertial>
+			<mass value="1.0" />
+			<inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
+		</inertial>
+	</link>
+</robot>
