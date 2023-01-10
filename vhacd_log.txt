@@ -29,7 +29,7 @@ Examples:
 
 + OpenCL (OFF)
 + Parameters
-	 input                                       objects/object_2.obj
+	 input                                       objects/object_3.obj
 	 resolution                                  1000000
 	 max. depth                                  20
 	 max. concavity                              0.001
@@ -46,51 +46,42 @@ Examples:
 	 OpenCL acceleration                         1
 	 OpenCL platform ID                          0
 	 OpenCL device ID                            0
-	 output                                      objects/object_2_vhacd.obj
-	 log                                         C:\Users\rukin\PycharmProjects\SonyProject\vhacd_log.txt
+	 output                                      objects/object_3_vhacd.obj
+	 log                                         /home/yunus/PycharmProjects/SonyProject/vhacd_log.txt
 + Load mesh
 + Voxelization
-	 dim = 64	-> 38815 voxels
-	 dim = 187	-> 915411 voxels
-	 dim = 193	-> 1005449 voxels
-	 time 0.068623s
+	 dim = 64	-> 41604 voxels
+	 dim = 183	-> 914966 voxels
+	 dim = 188	-> 988771 voxels
+	 dim = 189	-> 1004249 voxels
+	 time 0.0946965s
 + Compute primitive set
-	 # primitives               1005449
-	 # inside surface           918938
-	 # on surface               86511
-	 time 0.0069386s
+	 # primitives               1004249
+	 # inside surface           922259
+	 # on surface               81990
+	 time 0.00463814s
 + Approximate Convex Decomposition
 	 Subdivision level 1
-	 -> Part[0] C  = 0.109227, E  = 0.0774105, VS = 86511, VI = 918938
+	 -> Part[0] C  = 0.15443, E  = 0.0697253, VS = 81990, VI = 922259
 		 [Regular sampling] Number of clipping planes 104
 
-			 Best  0006 T=0.087665 C=0.082841 B=0.004825 S=0.000000 (1.0, 0.0, 0.0, -0.024)
+			 Best  0088 T=0.079110 C=0.078073 B=0.001037 S=0.000000 (0.0, 0.0, 1.0, 0.875)
 
 		 [Refining] Number of clipping planes 9
 
-			 Best  0005 T=0.087348 C=0.082528 B=0.004819 S=0.000000 (1.0, 0.0, 0.0, -0.025)
+			 Best  0004 T=0.080170 C=0.079132 B=0.001037 S=0.000000 (0.0, 0.0, 1.0, 0.875)
 
 	 Subdivision level 2
-	 -> Part[0] C  = 0.00276553, E  = 0.00276495, VS = 3090, VI = 1608
-		 [Regular sampling] Number of clipping planes 29
-
-			 Best  0005 T=0.001348 C=0.001348 B=0.000000 S=0.000000 (1.0, 0.0, 0.0, -0.022)
-
-		 [Refining] Number of clipping planes 9
-
-			 Best  0003 T=0.001417 C=0.001417 B=0.000000 S=0.000000 (1.0, 0.0, 0.0, -0.022)
-
-	 -> Part[1] C  = 0.0805003, E  = 0.0752639, VS = 84112, VI = 916639
-		 [Regular sampling] Number of clipping planes 97
-
-			 Best  0021 T=0.077284 C=0.077004 B=0.000279 S=0.000000 (1.0, 0.0, 0.0, -0.071)
-
-		 [Refining] Number of clipping planes 9
-
-			 Best  0007 T=0.077265 C=0.076841 B=0.000425 S=0.000000 (1.0, 0.0, 0.0, -0.072)
-
-	 Subdivision level 3
-	 -> Part[0] C  = 0.000758774, E  = 0.00154622, VS = 1728, VI = 765
-	 -> Part[1] C  = 0.00071825, E  = 0.00137979, VS = 1542, VI = 663
-	 -> Part[2] C  = 0.055578, E  = 0.0477853, VS = 53403, VI = 506524
-		 [Regular sampling] Number of clipping planes 77
+	 -> Part[0] C  = 0.0425777, E  = 0.0463245, VS = 54473, VI = 367868
+	 -> Part[1] C  = 0.0400263, E  = 0.0472855, VS = 55603, VI = 526305
++ Generate 2 convex-hulls 
+	 time 2.141s
++ Merge Convex Hulls
+	 time 0.000788786s
++ Simplify 2 convex-hulls 
+		 Simplify CH[00000] 448 V, 892 T
+		 Simplify CH[00001] 352 V, 700 T
+	 time 0.00931402s
++ Generate output: 2 convex-hulls 
+	 CH[00000] 64 V, 124 T
+	 CH[00001] 64 V, 124 T

@@ -1,3 +1,5 @@
+import glob
+
 import open3d as o3d
 import numpy as np
 from sklearn.cluster import DBSCAN
@@ -6,6 +8,7 @@ from object2urdf import ObjectUrdfBuilder
 import pybullet as p
 import time
 import pybullet_data
+import os
 
 
 def filter_white(pcd, tolerance=1.55):
@@ -31,7 +34,7 @@ def filter_white(pcd, tolerance=1.55):
     return pcd
 
 
-def filter_table(pcd, table=(-0.3, -0.5, 0.7, 0.35, 0.0, 0.91)):
+def filter_table(pcd, table=(-0.3, -0.5, 0.7, 0.35, 0.05, 0.91)):
     min_x, min_y, min_z, max_x, max_y, max_z = table
     p = np.asarray(pcd.points)
     c = np.asarray(pcd.colors)
@@ -191,7 +194,7 @@ def simplify_meshes(meshes):
 
 def create_urdfs(N):
     for i in range(N):
-        builder = ObjectUrdfBuilder('./', urdf_prototype='objects/_prototype.urdf')
+        builder = ObjectUrdfBuilder('objects', urdf_prototype='_prototype.urdf')
         builder.build_urdf(
             filename=f"objects/object_{i}.obj",
             force_overwrite=True,
@@ -199,6 +202,8 @@ def create_urdfs(N):
             force_decompose=False,
             center='mass'
         )
+        os.rename("objects/objects.urdf", f"objects/object_{i}.obj.urdf")
+
 
 
 def create_sim(N, centers, colors):
@@ -215,8 +220,8 @@ def create_sim(N, centers, colors):
     #           baseOrientation=p.getQuaternionFromEuler([np.pi / 2, 0, 0]))
     #p.changeVisualShape(plateID, -1, rgbaColor=[1, 0.975, 0.95, 1])
     for i in range(N):
-        boxId = p.loadURDF(f"objects/object_{i}.obj.urdf", [centers[i][0], centers[i][1], centers[i][2] + 1])
-        p.changeVisualShape(boxId, -1, rgbaColor=[colors[i][0], colors[i][1], colors[i][2], 1])
+        boxId = p.loadURDF(f"objects/object_{i}.obj.urdf", [centers[i][0]*1.5, centers[i][1]*1.5, centers[i][2] + 0.9])
+        p.changeVisualShape(boxId, -1, rgbaColor=[colors[i][0], colors[i][1], colors[i][2], 1.0])
 
     for i in range(10000):
         p.stepSimulation()
@@ -226,7 +231,12 @@ def create_sim(N, centers, colors):
 
 
 if __name__ == '__main__':
+    for filename in glob.glob("objects/object*"):
+        os.remove(filename)
+
     pcd, original_pcd = load_pointcloud("scene1.pcd")
+
+    o3d.visualization.draw_geometries([original_pcd])
 
     o3d.visualization.draw_geometries([pcd])
 
@@ -239,6 +249,8 @@ if __name__ == '__main__':
     objects, colors = fill_bottom_convex_hull(objects)
 
     meshes = generate_meshes(objects)
+
+    o3d.visualization.draw_geometries(meshes)
 
     meshes, centers = simplify_meshes(meshes)
 
